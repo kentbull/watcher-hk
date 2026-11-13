@@ -8,11 +8,10 @@ and launches the Watcher Operational Network under a real-time Doist.
 """
 import argparse
 import logging
-import os
 
-from hio.base import doing
 from keri import __version__
 from keri import help
+from keri.app.directing import runController
 from watopnet.app import watching
 
 d = "Runs KERI watcher operational network.\n"
@@ -158,6 +157,4 @@ def runWatcher(args, expire=0.0):
         cafilepath=args.cafilepath,
     )
 
-    tock = float(os.getenv("WATOPNET_DOIST_TOCK", "0.03125"))
-    doist = doing.Doist(limit=expire, tock=tock, real=True)
-    doist.do(doers=doers)
+    runController(doers=doers, expire=expire)  # Doist tick from KERI_DOIST_TOCK
