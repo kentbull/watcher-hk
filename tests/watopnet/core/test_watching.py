@@ -16,6 +16,7 @@ from falcon import testing
 from keri import kering
 from keri.app import habbing
 from keri.app.httping import CESR_DESTINATION_HEADER
+from keri.app.tocking import resolveTocks
 from keri.core import eventing
 
 from watopnet.app import watching
@@ -246,7 +247,8 @@ def test_sentinal_queries_witness_state_and_schedules_ahead_kel_recovery(monkeyp
     )
 
     sentinal = Sentinal(
-        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()}),
+        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()},
+                            tocks=resolveTocks(environ={})),
         hab=FakeHab(),
         oid="OBSERVED_AID",
         cid="CONTROLLER_AID",
@@ -538,7 +540,8 @@ def test_sentinal_waits_for_delayed_witness_state(monkeypatch):
     )
 
     sentinal = Sentinal(
-        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()}),
+        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()},
+                            tocks=resolveTocks(environ={})),
         hab=SimpleNamespace(pre=FakeHab.pre, db=db, kever=FakeHab.kever),
         oid="OBSERVED_AID",
         cid="CONTROLLER_AID",
@@ -864,7 +867,8 @@ def test_sentinal_pins_invalid_witness_ksn_without_aborting_other_witnesses(
     monkeypatch.setattr(Sentinal, "diffState", staticmethod(fake_diff))
 
     sentinal = Sentinal(
-        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()}),
+        hby=SimpleNamespace(db=db, kevers={"OBSERVED_AID": FakeKever()},
+                            tocks=resolveTocks(environ={})),
         hab=SimpleNamespace(pre="WATCHER_AID", db=db, kever=FakeKever()),
         oid="OBSERVED_AID",
         cid="CONTROLLER_AID",

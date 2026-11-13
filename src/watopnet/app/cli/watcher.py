@@ -9,8 +9,8 @@ doers under a real-time Doist event loop.
 import os
 
 import multicommand
-from hio.base import doing
 from keri import help
+from keri.app.directing import runController
 
 from watopnet.app.cli import commands
 
@@ -36,9 +36,7 @@ def main():
 
     try:
         doers = args.handler(args)
-        tock = float(os.getenv("WATOPNET_DOIST_TOCK", "0.03125"))
-        doist = doing.Doist(limit=0.0, tock=tock, real=True)
-        doist.do(doers=doers)
+        runController(doers=doers, expire=0.0)  # Doist tick from KERI_DOIST_TOCK
 
     except Exception as ex:
         if os.getenv("DEBUG_WATCHER"):

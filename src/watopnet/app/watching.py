@@ -491,7 +491,8 @@ class Watcher(doing.DoDoer):
             *self.oobiery.doers,
             WatcherStart(hab=self.hab),
             MessageDoer(parser=self.psr),
-            EscrowDoer(kvy=self.kvy, rvy=self.rvy, tvy=self.tvy, exc=self.exc),
+            EscrowDoer(kvy=self.kvy, rvy=self.rvy, tvy=self.tvy, exc=self.exc,
+                       tock=self.hby.tocks["witnessEscrow"]),
             CueDoer(db=self.db, hab=self.hab, aid=self.cid, cues=self.cues),
             SentinalDoer(
                 db=self.db, hby=self.hby, hab=self.hab, cid=self.cid, oobi=oobi
@@ -661,20 +662,21 @@ class MessageDoer(doing.Doer):
 class EscrowDoer(doing.Doer):
     """Doer that periodically drains pending escrows for all KERI message processors."""
 
-    def __init__(self, kvy, rvy, tvy, exc=None):
+    def __init__(self, kvy, rvy, tvy, exc=None, tock=0.0):
         """
         Parameters:
             kvy (Kevery): key event log processor
             rvy (Revery): reply message processor
             tvy (Tevery): transaction event log processor
             exc (Exchanger | None): exchange message processor
+            tock (float): seconds between escrow passes; the watcher passes its
+                Habery's witnessEscrow tock, the KERIpy key for this host escrow set
         """
         self.kvy = kvy
         self.rvy = rvy
         self.tvy = tvy
         self.exc = exc
 
-        tock = float(os.getenv("WATOPNET_ESCROW_TOCK", "0.5"))
         super(EscrowDoer, self).__init__(tock=tock)
 
     def recur(self, tyme=None):
